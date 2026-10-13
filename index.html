@@ -1,0 +1,545 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Resize images for online forms. Set exact dimensions, preview your photo, and download it directly from your browser.">
+  <title>FormPhoto Tools — Resize Images for Online Forms</title>
+  <style>
+    :root {
+      --primary: #2457e6;
+      --ink: #182033;
+      --muted: #687386;
+      --line: #e2e7ef;
+      --bg: #f6f8fc;
+      --white: #ffffff;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: Arial, Helvetica, sans-serif;
+      line-height: 1.6;
+    }
+
+    header {
+      background: var(--white);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .nav, main, footer {
+      width: min(1080px, 92%);
+      margin: auto;
+    }
+
+    .nav {
+      min-height: 72px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .brand {
+      font-size: 21px;
+      font-weight: 800;
+      letter-spacing: -0.7px;
+    }
+
+    .brand span { color: var(--primary); }
+
+    .nav-note {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    main { padding: 52px 0 64px; }
+
+    .hero {
+      max-width: 720px;
+      margin: 0 auto 32px;
+      text-align: center;
+    }
+
+    .eyebrow {
+      color: var(--primary);
+      font-weight: 700;
+      font-size: 12px;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin: 10px 0 14px;
+      font-size: clamp(32px, 5vw, 48px);
+      line-height: 1.12;
+      letter-spacing: -1.7px;
+    }
+
+    .hero p {
+      color: var(--muted);
+      font-size: 17px;
+      margin: 0;
+    }
+
+    .tool {
+      max-width: 850px;
+      margin: auto;
+      background: var(--white);
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      padding: 28px;
+      box-shadow: 0 12px 40px rgba(22, 39, 80, 0.05);
+    }
+
+    .upload {
+      display: block;
+      padding: 28px 16px;
+      text-align: center;
+      border: 2px dashed #bdc9df;
+      border-radius: 14px;
+      background: #fafbff;
+      cursor: pointer;
+    }
+
+    .upload:hover { border-color: var(--primary); }
+
+    .upload-icon { font-size: 32px; }
+
+    .upload strong {
+      display: block;
+      margin: 6px 0 2px;
+    }
+
+    .upload small, .hint {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    input[type="file"] { display: none; }
+
+    .workspace {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      margin-top: 26px;
+    }
+
+    .panel {
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 20px;
+      min-width: 0;
+    }
+
+    h2 { font-size: 18px; margin: 0 0 16px; }
+
+    .field-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    label.field {
+      display: block;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .field input, .field select {
+      display: block;
+      width: 100%;
+      margin-top: 6px;
+      padding: 11px;
+      border: 1px solid #cfd7e5;
+      border-radius: 8px;
+      font: inherit;
+      background: white;
+      color: var(--ink);
+    }
+
+    .check {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      margin: 15px 0;
+      font-size: 14px;
+    }
+
+    .check input { width: 17px; height: 17px; }
+
+    button {
+      width: 100%;
+      border: 0;
+      border-radius: 9px;
+      padding: 13px 16px;
+      background: var(--primary);
+      color: white;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    button:hover { background: #1945c2; }
+    button:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    .secondary {
+      background: white;
+      color: var(--primary);
+      border: 1px solid #cbd6f4;
+      margin-top: 10px;
+    }
+
+    .secondary:hover { background: #f3f6ff; }
+
+    .preview {
+      min-height: 220px;
+      border-radius: 10px;
+      background:
+        linear-gradient(45deg, #eef1f7 25%, transparent 25%),
+        linear-gradient(-45deg, #eef1f7 25%, transparent 25%),
+        linear-gradient(45deg, transparent 75%, #eef1f7 75%),
+        linear-gradient(-45deg, transparent 75%, #eef1f7 75%);
+      background-size: 20px 20px;
+      background-position: 0 0, 0 10px, 10px -10px, -10px 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+      padding: 12px;
+    }
+
+    .preview img {
+      max-width: 100%;
+      max-height: 280px;
+      object-fit: contain;
+      display: none;
+    }
+
+    .preview-placeholder {
+      color: var(--muted);
+      text-align: center;
+      font-size: 14px;
+      padding: 12px;
+    }
+
+    .status {
+      min-height: 24px;
+      margin: 12px 0 0;
+      font-size: 13px;
+      overflow-wrap: anywhere;
+    }
+
+    .status.error { color: #b42318; }
+    .status.success { color: #14764a; }
+
+    .result {
+      background: #f3f6ff;
+      padding: 12px;
+      border-radius: 9px;
+      margin: 12px 0;
+      font-size: 13px;
+      overflow-wrap: anywhere;
+    }
+
+    .info {
+      margin-top: 26px;
+      padding: 22px 4px 0;
+      border-top: 1px solid var(--line);
+    }
+
+    .info h2 { margin-bottom: 8px; }
+    .info p { color: var(--muted); font-size: 14px; }
+
+    footer {
+      padding: 24px 0;
+      border-top: 1px solid var(--line);
+      color: var(--muted);
+      font-size: 13px;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    @media (max-width: 650px) {
+      main { padding-top: 36px; }
+      .workspace { grid-template-columns: 1fr; }
+      .tool { padding: 16px; }
+      .panel { padding: 16px; }
+      .nav-note { display: none; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="nav">
+      <div class="brand">FormPhoto <span>Tools</span></div>
+      <div class="nav-note">Simple image tools · No account needed</div>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="eyebrow">Free online image resizer</div>
+      <h1>Get your photo ready for an online form.</h1>
+      <p>Set the exact dimensions you need, preview your image, and download it. Your photo is processed in your browser.</p>
+    </section>
+
+    <section class="tool" aria-label="Image resizing tool">
+      <label class="upload" for="fileInput">
+        <span class="upload-icon">📷</span>
+        <strong>Choose an image from your device</strong>
+        <small>JPG, PNG, or WebP · Maximum 15 MB</small>
+      </label>
+      <input id="fileInput" type="file" accept="image/jpeg,image/png,image/webp">
+
+      <div class="workspace">
+        <section class="panel">
+          <h2>Resize settings</h2>
+          <div class="field-grid">
+            <label class="field">Width (px)
+              <input id="width" type="number" min="1" max="10000" value="600">
+            </label>
+            <label class="field">Height (px)
+              <input id="height" type="number" min="1" max="10000" value="600">
+            </label>
+          </div>
+
+          <label class="check">
+            <input id="keepRatio" type="checkbox" checked>
+            Keep original proportions
+          </label>
+
+          <label class="field">Output format
+            <select id="format">
+              <option value="image/jpeg">JPG</option>
+              <option value="image/png">PNG</option>
+              <option value="image/webp">WebP</option>
+            </select>
+          </label>
+
+          <p class="hint">Check the form's own instructions for its required dimensions and format.</p>
+          <button id="resizeBtn" disabled>Resize image</button>
+          <button id="downloadBtn" class="secondary" disabled>Download resized image</button>
+          <p id="status" class="status" role="status" aria-live="polite">Choose an image to begin.</p>
+          <div id="result" class="result" hidden></div>
+        </section>
+
+        <section class="panel">
+          <h2>Image preview</h2>
+          <div class="preview">
+            <img id="preview" alt="Preview of your selected image">
+            <div id="placeholder" class="preview-placeholder">Your image preview will appear here.</div>
+          </div>
+          <p id="dimensions" class="hint">No image selected.</p>
+        </section>
+      </div>
+    </section>
+
+    <section class="info">
+      <h2>How to resize a photo for an online form</h2>
+      <p>1. Choose your image. 2. Enter the width and height requested by the form. 3. Choose an accepted image format. 4. Resize and download your result. Always check the form's maximum file size and photo requirements before submitting.</p>
+      <h2>Privacy by design</h2>
+      <p>This tool uses your browser to process the selected image. The image is not intentionally uploaded to a FormPhoto Tools server. Avoid using public or shared devices for sensitive documents, and remember that downloaded files may remain on your device.</p>
+    </section>
+  </main>
+
+  <footer>
+    <span>© <span id="year"></span> FormPhoto Tools</span>
+    <span>Simple tools for everyday tasks</span>
+  </footer>
+
+  <script>
+    const fileInput = document.getElementById("fileInput");
+    const widthInput = document.getElementById("width");
+    const heightInput = document.getElementById("height");
+    const keepRatio = document.getElementById("keepRatio");
+    const formatInput = document.getElementById("format");
+    const resizeBtn = document.getElementById("resizeBtn");
+    const downloadBtn = document.getElementById("downloadBtn");
+    const preview = document.getElementById("preview");
+    const placeholder = document.getElementById("placeholder");
+    const dimensions = document.getElementById("dimensions");
+    const status = document.getElementById("status");
+    const result = document.getElementById("result");
+
+    let originalImage = null;
+    let originalURL = null;
+    let outputURL = null;
+    let originalWidth = 0;
+    let originalHeight = 0;
+    let outputBlob = null;
+
+    document.getElementById("year").textContent = new Date().getFullYear();
+
+    function setStatus(message, type = "") {
+      status.textContent = message;
+      status.className = "status " + type;
+    }
+
+    function clearOutput() {
+      if (outputURL) URL.revokeObjectURL(outputURL);
+      outputURL = null;
+      outputBlob = null;
+      downloadBtn.disabled = true;
+      result.hidden = true;
+    }
+
+    fileInput.addEventListener("change", () => {
+      clearOutput();
+      const file = fileInput.files[0];
+      originalImage = null;
+
+      if (originalURL) URL.revokeObjectURL(originalURL);
+      originalURL = null;
+
+      if (!file) {
+        resizeBtn.disabled = true;
+        preview.style.display = "none";
+        placeholder.style.display = "block";
+        dimensions.textContent = "No image selected.";
+        return;
+      }
+
+      if (!["image/jpeg", "image/png", "image/webp"].includes(file.type)) {
+        setStatus("Please select a JPG, PNG, or WebP image.", "error");
+        fileInput.value = "";
+        resizeBtn.disabled = true;
+        return;
+      }
+
+      if (file.size > 15 * 1024 * 1024) {
+        setStatus("This file exceeds the 15 MB limit. Please choose a smaller image.", "error");
+        fileInput.value = "";
+        resizeBtn.disabled = true;
+        return;
+      }
+
+      originalURL = URL.createObjectURL(file);
+      const image = new Image();
+
+      image.onload = () => {
+        originalImage = image;
+        originalWidth = image.naturalWidth;
+        originalHeight = image.naturalHeight;
+        widthInput.value = originalWidth;
+        heightInput.value = originalHeight;
+        preview.src = originalURL;
+        preview.style.display = "block";
+        placeholder.style.display = "none";
+        dimensions.textContent = `Original: ${originalWidth} × ${originalHeight} px · ${(file.size / 1024).toFixed(1)} KB`;
+        resizeBtn.disabled = false;
+        setStatus("Image ready. Enter the dimensions you need.");
+      };
+
+      image.onerror = () => {
+        setStatus("We couldn't read this image. Please try another file.", "error");
+        resizeBtn.disabled = true;
+      };
+
+      image.src = originalURL;
+    });
+
+    widthInput.addEventListener("input", () => {
+      if (keepRatio.checked && originalWidth && originalHeight) {
+        const width = Number(widthInput.value);
+        if (width > 0) heightInput.value = Math.round(width * originalHeight / originalWidth);
+      }
+    });
+
+    heightInput.addEventListener("input", () => {
+      if (keepRatio.checked && originalWidth && originalHeight) {
+        const height = Number(heightInput.value);
+        if (height > 0) widthInput.value = Math.round(height * originalWidth / originalHeight);
+      }
+    });
+
+    keepRatio.addEventListener("change", () => {
+      if (keepRatio.checked && originalWidth && originalHeight) {
+        heightInput.value = Math.round(Number(widthInput.value) * originalHeight / originalWidth);
+      }
+    });
+
+    resizeBtn.addEventListener("click", () => {
+      if (!originalImage) return;
+
+      const width = Number(widthInput.value);
+      const height = Number(heightInput.value);
+
+      if (!Number.isInteger(width) || !Number.isInteger(height) ||
+          width < 1 || height < 1 || width > 10000 || height > 10000) {
+        setStatus("Enter whole-number dimensions between 1 and 10,000 pixels.", "error");
+        return;
+      }
+
+      clearOutput();
+      resizeBtn.disabled = true;
+      setStatus("Resizing your image…");
+
+      try {
+        const canvas = document.createElement("canvas");
+        canvas.width = width;
+        canvas.height = height;
+        const context = canvas.getContext("2d");
+
+        if (!context) throw new Error("Canvas is unavailable in this browser.");
+
+        if (formatInput.value === "image/jpeg") {
+          context.fillStyle = "#ffffff";
+          context.fillRect(0, 0, width, height);
+        }
+
+        context.drawImage(originalImage, 0, 0, width, height);
+
+        canvas.toBlob((blob) => {
+          resizeBtn.disabled = false;
+
+          if (!blob) {
+            setStatus("The image could not be exported in this format. Try another format.", "error");
+            return;
+          }
+
+          outputBlob = blob;
+          outputURL = URL.createObjectURL(blob);
+          downloadBtn.disabled = false;
+
+          result.textContent =
+            `Output: ${width} × ${height} px · ${(blob.size / 1024).toFixed(1)} KB`;
+          result.hidden = false;
+          setStatus("Your resized image is ready to download.", "success");
+        }, formatInput.value, formatInput.value === "image/jpeg" ? 0.92 : undefined);
+      } catch (error) {
+        resizeBtn.disabled = false;
+        setStatus(error.message || "Something went wrong while resizing.", "error");
+      }
+    });
+
+    downloadBtn.addEventListener("click", () => {
+      if (!outputBlob || !outputURL) return;
+
+      const extension = {
+        "image/jpeg": "jpg",
+        "image/png": "png",
+        "image/webp": "webp"
+      }[formatInput.value];
+
+      const link = document.createElement("a");
+      link.href = outputURL;
+      link.download = `resized-image.${extension}`;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+    });
+
+    window.addEventListener("beforeunload", () => {
+      if (originalURL) URL.revokeObjectURL(originalURL);
+      if (outputURL) URL.revokeObjectURL(outputURL);
+    });
+  </script>
+</body>
+</html>
