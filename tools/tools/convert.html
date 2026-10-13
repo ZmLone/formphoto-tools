@@ -1,0 +1,340 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Convert JPG, PNG and WebP images online for forms, applications and everyday use.">
+  <title>Image Converter — FormPhoto Tools</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f5f7fb;
+      color: #172033;
+      line-height: 1.5;
+    }
+    header {
+      padding: 16px 20px;
+      background: white;
+      border-bottom: 1px solid #e5e7eb;
+    }
+    .container { max-width: 760px; margin: auto; }
+    .brand { font-size: 21px; font-weight: 800; color: #2457d6; }
+    .brand a { color: inherit; text-decoration: none; }
+    main { padding: 28px 16px 45px; }
+    h1 { font-size: 30px; margin: 0 0 8px; }
+    h2 { margin-top: 0; }
+    .intro { color: #647084; margin: 0 0 22px; }
+    .panel {
+      background: white;
+      border: 1px solid #e1e7f0;
+      border-radius: 16px;
+      padding: 22px;
+      margin-bottom: 18px;
+    }
+    label { display: block; font-weight: 700; margin-bottom: 8px; }
+    input, select, button { font: inherit; }
+    input[type="file"], select {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #cbd3e1;
+      border-radius: 9px;
+      background: white;
+    }
+    .field { margin-bottom: 20px; }
+    .hint { color: #697589; font-size: 13px; margin-top: 6px; }
+    button, .download {
+      display: inline-block;
+      width: 100%;
+      padding: 13px 16px;
+      border: 0;
+      border-radius: 10px;
+      background: #2457d6;
+      color: white;
+      font-weight: 700;
+      text-align: center;
+      text-decoration: none;
+      cursor: pointer;
+    }
+    button:disabled { opacity: .5; cursor: not-allowed; }
+    .secondary { background: #eaf0ff; color: #2457d6; margin-top: 12px; }
+    .status { margin-top: 14px; font-size: 14px; overflow-wrap: anywhere; }
+    .error { color: #b42318; }
+    .success { color: #087443; }
+    .stats {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin: 18px 0;
+    }
+    .stat { background: #f5f7fb; border-radius: 10px; padding: 13px; }
+    .stat span { display: block; color: #647084; font-size: 13px; }
+    .stat strong { font-size: 18px; overflow-wrap: anywhere; }
+    .preview {
+      width: 100%;
+      max-height: 360px;
+      object-fit: contain;
+      background-color: #f5f7fb;
+      background-image: linear-gradient(45deg,#e7eaf0 25%,transparent 25%),
+        linear-gradient(-45deg,#e7eaf0 25%,transparent 25%),
+        linear-gradient(45deg,transparent 75%,#e7eaf0 75%),
+        linear-gradient(-45deg,transparent 75%,#e7eaf0 75%);
+      background-size: 20px 20px;
+      background-position: 0 0,0 10px,10px -10px,-10px 0;
+      border-radius: 10px;
+      margin: 12px 0;
+    }
+    .hidden { display: none !important; }
+    footer { text-align: center; color: #6b7280; font-size: 13px; padding: 20px; }
+    @media (max-width: 480px) {
+      .panel { padding: 17px; }
+      h1 { font-size: 26px; }
+    }
+  </style>
+</head>
+<body>
+<header>
+  <div class="container brand"><a href="/">FormPhoto Tools</a></div>
+</header>
+
+<main class="container">
+  <h1>Image Converter</h1>
+  <p class="intro">Convert images to the format you need for forms, applications and websites.</p>
+
+  <section class="panel">
+    <div class="field">
+      <label for="file">Choose an image</label>
+      <input id="file" type="file" accept="image/jpeg,image/png,image/webp">
+      <div class="hint">JPG, PNG or WebP. Maximum input size: 15 MB.</div>
+    </div>
+
+    <div class="field">
+      <label for="format">Convert to</label>
+      <select id="format">
+        <option value="image/jpeg">JPG (.jpg)</option>
+        <option value="image/png">PNG (.png)</option>
+        <option value="image/webp">WebP (.webp)</option>
+      </select>
+      <div class="hint">JPG does not support transparency. Transparent areas will become white when converting to JPG.</div>
+    </div>
+
+    <button id="convert" disabled>Convert Image</button>
+    <p id="status" class="status" role="status" aria-live="polite">Choose an image to begin.</p>
+  </section>
+
+  <section id="result" class="panel hidden">
+    <h2>Converted image</h2>
+    <div class="stats">
+      <div class="stat"><span>Original file size</span><strong id="originalSize">—</strong></div>
+      <div class="stat"><span>Converted file size</span><strong id="convertedSize">—</strong></div>
+      <div class="stat"><span>Original format</span><strong id="originalFormat">—</strong></div>
+      <div class="stat"><span>New format</span><strong id="newFormat">—</strong></div>
+    </div>
+    <img id="preview" class="preview" alt="Preview of converted image">
+    <a id="download" class="download" href="#" download="converted-image.jpg">Download Converted Image</a>
+    <p id="note" class="hint"></p>
+    <button id="reset" class="secondary">Convert Another Image</button>
+  </section>
+
+  <section class="panel">
+    <h2>Which format should you choose?</h2>
+    <p><strong>JPG:</strong> Good for photographs and widely accepted by online forms.</p>
+    <p><strong>PNG:</strong> Good for graphics and images that need transparency, but files may be larger.</p>
+    <p><strong>WebP:</strong> Often offers smaller files for websites, although some older forms may not accept it.</p>
+  </section>
+</main>
+
+<footer>Images are processed locally in your browser.</footer>
+
+<script>
+(() => {
+  const fileInput = document.getElementById('file');
+  const formatInput = document.getElementById('format');
+  const convertButton = document.getElementById('convert');
+  const status = document.getElementById('status');
+  const result = document.getElementById('result');
+  const preview = document.getElementById('preview');
+  const download = document.getElementById('download');
+  const note = document.getElementById('note');
+
+  let selectedFile = null;
+  let sourceURL = null;
+  let outputURL = null;
+  let working = false;
+
+  function bytes(size) {
+    if (size < 1024) return size + ' B';
+    if (size < 1024 * 1024) return (size / 1024).toFixed(1) + ' KB';
+    return (size / (1024 * 1024)).toFixed(2) + ' MB';
+  }
+
+  function formatName(mime) {
+    return mime === 'image/jpeg' ? 'JPG' :
+           mime === 'image/png' ? 'PNG' :
+           mime === 'image/webp' ? 'WebP' : 'Unknown';
+  }
+
+  function setStatus(message, type = '') {
+    status.textContent = message;
+    status.className = 'status ' + type;
+  }
+
+  function clearResult() {
+    if (outputURL) URL.revokeObjectURL(outputURL);
+    outputURL = null;
+    preview.removeAttribute('src');
+    download.removeAttribute('href');
+    result.classList.add('hidden');
+  }
+
+  fileInput.addEventListener('change', () => {
+    clearResult();
+    selectedFile = fileInput.files && fileInput.files[0];
+
+    if (sourceURL) URL.revokeObjectURL(sourceURL);
+    sourceURL = null;
+    convertButton.disabled = true;
+
+    if (!selectedFile) {
+      setStatus('Choose an image to begin.');
+      return;
+    }
+
+    if (!['image/jpeg', 'image/png', 'image/webp'].includes(selectedFile.type)) {
+      selectedFile = null;
+      fileInput.value = '';
+      setStatus('Please choose a JPG, PNG or WebP image.', 'error');
+      return;
+    }
+
+    if (selectedFile.size > 15 * 1024 * 1024) {
+      selectedFile = null;
+      fileInput.value = '';
+      setStatus('The image is larger than 15 MB. Please choose a smaller file.', 'error');
+      return;
+    }
+
+    sourceURL = URL.createObjectURL(selectedFile);
+    const img = new Image();
+
+    img.onload = () => {
+      convertButton.disabled = false;
+      setStatus('Image ready: ' + img.naturalWidth + ' × ' +
+        img.naturalHeight + ' pixels · ' + bytes(selectedFile.size), 'success');
+    };
+
+    img.onerror = () => {
+      selectedFile = null;
+      setStatus('This image could not be opened. Try another file.', 'error');
+    };
+
+    img.src = sourceURL;
+  });
+
+  convertButton.addEventListener('click', async () => {
+    if (!selectedFile || working) return;
+
+    working = true;
+    convertButton.disabled = true;
+    clearResult();
+
+    try {
+      setStatus('Converting image…');
+
+      const img = new Image();
+      img.src = sourceURL;
+      await new Promise((resolve, reject) => {
+        img.onload = resolve;
+        img.onerror = () => reject(new Error('Could not load this image.'));
+      });
+
+      const maxSide = 5000;
+      const scale = Math.min(1, maxSide / Math.max(img.naturalWidth, img.naturalHeight));
+      const width = Math.max(1, Math.round(img.naturalWidth * scale));
+      const height = Math.max(1, Math.round(img.naturalHeight * scale));
+
+      const canvas = document.createElement('canvas');
+      canvas.width = width;
+      canvas.height = height;
+
+      const ctx = canvas.getContext('2d');
+      if (!ctx) throw new Error('Your browser could not prepare the image.');
+
+      const mime = formatInput.value;
+
+      // JPG has no alpha channel, so fill the canvas white first.
+      if (mime === 'image/jpeg') {
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(0, 0, width, height);
+      }
+
+      ctx.drawImage(img, 0, 0, width, height);
+
+      const blob = await new Promise(resolve => {
+        // Use high quality for JPG and WebP output.
+        canvas.toBlob(resolve, mime, 0.92);
+      });
+
+      if (!blob) {
+        throw new Error('Your browser could not create this format. Try a different output format.');
+      }
+
+      // Some browsers may return PNG instead of the requested type.
+      const actualMime = blob.type || mime;
+      const ext = actualMime === 'image/jpeg' ? 'jpg' :
+                  actualMime === 'image/png' ? 'png' :
+                  actualMime === 'image/webp' ? 'webp' : 'png';
+
+      outputURL = URL.createObjectURL(blob);
+      preview.src = outputURL;
+      download.href = outputURL;
+      download.download = 'converted-image.' + ext;
+
+      document.getElementById('originalSize').textContent = bytes(selectedFile.size);
+      document.getElementById('convertedSize').textContent = bytes(blob.size);
+      document.getElementById('originalFormat').textContent = formatName(selectedFile.type);
+      document.getElementById('newFormat').textContent = formatName(actualMime);
+
+      result.classList.remove('hidden');
+
+      let message = 'Conversion complete. Your image is ready to download.';
+      if (width !== img.naturalWidth || height !== img.naturalHeight) {
+        note.textContent = 'The image dimensions were reduced to help prevent memory problems on common devices.';
+      } else {
+        note.textContent = 'Conversion can change image quality and file size. Image metadata such as EXIF information may not be preserved.';
+      }
+
+      if (actualMime !== mime) {
+        note.textContent += ' Your browser did not support the selected output format and returned ' + formatName(actualMime) + ' instead.';
+      }
+
+      setStatus(message, 'success');
+    } catch (error) {
+      setStatus(error.message || 'Conversion failed. Please try another image.', 'error');
+    } finally {
+      working = false;
+      convertButton.disabled = !selectedFile;
+    }
+  });
+
+  document.getElementById('reset').addEventListener('click', () => {
+    fileInput.value = '';
+    selectedFile = null;
+    if (sourceURL) URL.revokeObjectURL(sourceURL);
+    sourceURL = null;
+    clearResult();
+    convertButton.disabled = true;
+    setStatus('Choose an image to begin.');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+
+  window.addEventListener('beforeunload', () => {
+    if (sourceURL) URL.revokeObjectURL(sourceURL);
+    if (outputURL) URL.revokeObjectURL(outputURL);
+  });
+})();
+</script>
+</body>
+</html>
