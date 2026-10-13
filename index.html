@@ -1,0 +1,107 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Free online image tools to resize, compress and convert photos for forms and applications.">
+  <title>FormPhoto Tools — Free Online Image Tools</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f5f7fb;
+      color: #172033;
+      line-height: 1.6;
+    }
+    header {
+      background: white;
+      border-bottom: 1px solid #e5e7eb;
+      padding: 18px 20px;
+    }
+    .container { max-width: 1000px; margin: auto; }
+    .brand { font-size: 23px; font-weight: 800; color: #2457d6; }
+    .hero { text-align: center; padding: 58px 16px 35px; }
+    h1 { font-size: clamp(30px, 5vw, 46px); line-height: 1.15; margin: 0 0 16px; }
+    .hero p { max-width: 620px; margin: auto; color: #596579; }
+    .tools {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+      gap: 18px;
+      padding: 20px;
+    }
+    .tool {
+      display: block;
+      background: white;
+      border: 1px solid #e3e8f1;
+      border-radius: 16px;
+      padding: 24px;
+      color: inherit;
+      text-decoration: none;
+      transition: transform .18s, box-shadow .18s;
+    }
+    .tool:hover { transform: translateY(-3px); box-shadow: 0 8px 25px #17203312; }
+    .tool .icon { font-size: 32px; }
+    h2 { margin: 10px 0 6px; font-size: 21px; }
+    .tool p { color: #657084; margin: 0; }
+    .tag {
+      display: inline-block;
+      margin-top: 16px;
+      color: #2457d6;
+      font-weight: 700;
+    }
+    .privacy {
+      margin: 25px 20px 40px;
+      padding: 20px;
+      border-radius: 12px;
+      background: #eaf3ff;
+      color: #29476e;
+    }
+    footer { text-align: center; padding: 24px; color: #6b7280; font-size: 14px; }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container brand">FormPhoto Tools</div>
+  </header>
+
+  <main class="container">
+    <section class="hero">
+      <h1>Make your photos ready for any form</h1>
+      <p>Free, simple online tools to resize, compress and convert images for applications, exams and document uploads.</p>
+    </section>
+
+    <section class="tools" aria-label="Image tools">
+      <a class="tool" href="/tools/resize.html">
+        <div class="icon">↔️</div>
+        <h2>Image Resizer</h2>
+        <p>Change photo width and height while keeping the original proportions.</p>
+        <span class="tag">Open resizer →</span>
+      </a>
+
+      <a class="tool" href="/tools/compress.html">
+        <div class="icon">🗜️</div>
+        <h2>Image Compressor</h2>
+        <p>Reduce image file size to help meet upload limits.</p>
+        <span class="tag">Coming next →</span>
+      </a>
+
+      <a class="tool" href="/tools/convert.html">
+        <div class="icon">🔄</div>
+        <h2>Image Converter</h2>
+        <p>Convert images between JPG, PNG and WebP formats.</p>
+        <span class="tag">Coming soon →</span>
+      </a>
+    </section>
+
+    <section class="privacy">
+      <strong>Privacy-friendly by design</strong>
+      <p>Your images are processed directly in your browser by the tools on this site. Avoid uploading sensitive documents to websites you do not trust.</p>
+    </section>
+  </main>
+
+  <footer>© <span id="year"></span> FormPhoto Tools · Simple tools, made useful.</footer>
+  <script>document.getElementById("year").textContent = new Date().getFullYear();</script>
+</body>
+</html>
